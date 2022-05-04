@@ -1,1 +1,2 @@
-# CS337-NLP_P1
+# gg-project-master
+Golden Globe Project Master
