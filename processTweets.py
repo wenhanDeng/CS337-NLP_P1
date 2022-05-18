@@ -8,7 +8,7 @@ words_exclusion = ['-', 'performance', 'of', 'by', 'an', 'in', 'a', 'an', 'role'
 
 awards2tweets = {}
 awards2newAward = {}
-name2newName = {}
+Newname2name = {}
 def process_tweet(years):
     nlp = spacy.load('en_core_web_sm')
     if years == 2013 or years == 2015:
@@ -24,17 +24,17 @@ def process_tweet(years):
                 continue
             else:
                 new_name.append(i)
+        if "television" in a:
+            new_name.append('tv')
+        if "cecil" in a:
+            new_name.append('lifetime')
+            new_name.append('pre-lifetime')
+            new_name.append('achievement')
         new_awards_list.append(new_name)
-        name2newName[a] = new_name
+        Newname2name[''.join(new_name)] = a
 
     # modify the award key name
-    for a in new_awards_list:
-        if "television" in a:
-            a.append('tv')
-        if "cecil" in a:
-            a.append('lifetime')
-            a.append('pre-lifetime')
-            a.append('achievement')
+
         
   
     result = handle_Data(years)
@@ -115,7 +115,7 @@ def process_tweet(years):
                         awards2tweets[award_name].append(t)
 
     # print(new_awards_list)            
-    return awards2tweets, new_awards_list, name2newName
+    return awards2tweets, new_awards_list, Newname2name
 
 
 process_tweet(2013)
