@@ -143,7 +143,7 @@ def getWinners(year):
      winners = sorted(winners.items(), key = lambda kv:kv[1], reverse= True)
      newAN = Newname2name[tt]
      awards2winner[newAN] = winners[0][0]
-    print(awards2winner)
+    # print(awards2winner)
     return awards2winner
     #  print(tt, '->',winners[0])
     #  if len(winners) >= 2:
