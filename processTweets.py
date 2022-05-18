@@ -1,6 +1,4 @@
 
-from itertools import count
-from unittest import result
 from data import handle_Data
 from gg_api import OFFICIAL_AWARDS_1315, OFFICIAL_AWARDS_1819
 import spacy
@@ -28,6 +26,8 @@ def process_tweet(years):
                 new_name.append(i)
         new_awards_list.append(new_name)
         name2newName[a] = new_name
+
+    # modify the award key name
     for a in new_awards_list:
         if "television" in a:
             a.append('tv')
@@ -74,6 +74,26 @@ def process_tweet(years):
             elif 'mini-series' in a and (tweet.find('mini') == -1):
                 continue  
             
+            elif 'mini-series' not in a and (tweet.find('mini') != -1):
+                continue 
+            
+            elif 'score' not in a and (tweet.find('score') != -1):
+                continue 
+            
+            elif 'song' not in a and (tweet.find('song') != -1):
+                continue 
+            
+            elif 'score' in a and (tweet.find('score') == -1):
+                continue 
+            
+            elif 'song'  in a and (tweet.find('song') == -1):
+                continue 
+            
+            elif 'screenplay'  in a and (tweet.find('screenplay') == -1):
+                continue 
+            
+            elif 'screenplay' not in a and (tweet.find('screenplay') != -1):
+                continue
 
             # elif (tweet.find('actor') != -1 or tweet.find('actress') != -1) and 'actress' not in a:
             #     continue  

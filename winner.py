@@ -1,9 +1,11 @@
 
-from lib2to3.pgen2 import token
-from turtle import Turtle
+
+from doctest import FAIL_FAST
+from pickle import TRUE
 from processTweets import process_tweet
 from data import handle_Data
 import spacy
+from spacy.symbols import nsubj, dobj
 import re
 # nlp = spacy.load('en_core_web_sm')
 # check = nlp('Daniel Day')
@@ -13,26 +15,87 @@ import re
 #         print(tok.text)
  
 def getWinners(year):
-     
+    name_pattern = re.compile(r'[A-Z]\w*\s[A-Z]\w*')
+    year_pattern = re.compile(r'\d{4}')
+    
+    awards2winner = {}
     awards2tweets, awards_list, name2Newname = process_tweet(year)
+    
     for tt in awards2tweets:
-     result = awards2tweets['actorsupportingseries,mini-seriesormotionpicturetelevisiontv']
+     tt = 'mini-seriesormotionpicturetelevisiontv'
+     winners = {}
+     result = awards2tweets[tt]
      winner_keyword = ['win', 'won', 'goes to', 'go to', 'congrates', 'congratulations', 'congratulate', '-', 'for']
      tem = ['best', 'director', 'motion', 'picture', 'actor', 'actress', 'supporting', 'comedy', 'musical', 'mini-series', 'screenplay', 'performance', 'series', 'tv', 'mini', 'and', 'golden globe', 'song']
      nlp = spacy.load('en_core_web_sm')
+     
      if ('actor' not in tt) and ('actress' not in tt) and ('cecil' not in tt) and ('director' not in tt):
          for out in result:
-             o = nlp(out)
-            #  for tok in o.ents:
-            #     #  print(tok.text, '->', tok.label_)
-     else:
+   
+             temp = out.lower()
+             if 'future' in temp or 'wish' in temp or 'will' in temp or "next year" in temp or "petition" in temp or "hope" in temp:
+              continue
+             if not any([kw in temp for kw in winner_keyword]):
+              continue
 
-      name_pattern = re.compile(r'[A-Z][a-z]* [A-Z][a-z]*')
-      
-      year_pattern = re.compile(r'\d{4}')
+             o = nlp(out)
+
+             foundWinner = False
+             for tok in o.ents:
+                work_name = tok.text.lower()
+                if any([t in work_name for t in tem]):
+                    continue
+                if tok.label_ == 'WORK_OF_ART':
+                  work_name = re.sub(r'[^\w\s]', '', work_name)
+                  foundWinner = True
+                  if work_name in winners:
+                      winners[work_name] += 1
+                  else:
+                      winners[work_name] = 1
+             if not foundWinner:
+                 for possible_subject in nlp(out):
+                    if possible_subject.dep == nsubj and (str(possible_subject.head) == 'won' or str(possible_subject.head) == 'wins' or str(possible_subject.head) == 'win' or str(possible_subject.head) == 'takes' or str(possible_subject.head) == 'took'):
+                        for chunk in nlp(out).noun_chunks:
+                            sig = False
+                            for ent in nlp(chunk.text).ents:
+                                if ent.label_ == 'PERSON':
+                                    sig = True
+                                    break
+                            if sig:
+                                continue
+                            if str(possible_subject).lower() in chunk.text.lower():
+                                foundWinner = TRUE
+                                if chunk.text.lower() in winners:
+                                    winners[chunk.text.lower()] += 1
+                                else:
+                                    winners[chunk.text.lower()] = 1
+                    elif possible_subject.dep == dobj and str(possible_subject.head) == 'to':
+                        for chunk in nlp(out).noun_chunks:
+                            sig = False
+                            for ent in nlp(chunk.text).ents:
+                                if ent.label_ == 'PERSON':
+                                    sig = True
+                                    break
+                            if sig:
+                                continue
+                            if str(possible_subject).lower() in chunk.text.lower():
+                                foundWinner = TRUE
+                                if chunk.text.lower() in winners:
+                                    winners[chunk.text.lower()] += 1
+                                else:
+                                    winners[chunk.text.lower()] = 1
+            #  if not foundWinner:
+            #      possible_names = re.findall('([A-Z][a-z]+(?=\s[A-Z])(?:\s[A-Z][a-z]+)+)', out)
+            #      for name in possible_names:
+            #       name = name.lower()
+            #       if name in winners:
+            #           winners[name] += 1
+            #       else:
+            #           winners[name] = 1    
+     else:
+  
+
          
-      hosts = {}
-      total = 0
       for out in result:
           temp = out.lower()
           if 'future' in temp or 'wish' in temp or 'will' in temp or "next year" in temp or "petition" in temp or "hope" in temp:
@@ -65,17 +128,17 @@ def getWinners(year):
 
                   if any([t in na for t in tem]):
                       continue
-                  if na in hosts:
-                      hosts[na] += 1
+                  if na in winners:
+                      winners[na] += 1
                   else:
-                      hosts[na] = 1
-      if len(hosts) == 0:
-          print(tt, '->', 'None')
-          continue
-      hosts = sorted(hosts.items(), key = lambda kv:kv[1], reverse= True)
-      print(tt, '->', hosts[0])
-      hosts = hosts[:5]
-      hosts = list(map(list, hosts))
-      
+                      winners[na] = 1
+     if len(winners) == 0:
+        print(tt, '->', 'None')
+        continue
+     winners = sorted(winners.items(), key = lambda kv:kv[1], reverse= True)
+     awards2winner[tt] = winners[0]
+     print(tt, '->',winners[0])
+    #  if len(winners) >= 2:
+    #     print(tt, '->',winners[1])
 getWinners(2013)
     
