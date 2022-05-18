@@ -1,4 +1,4 @@
-from processTweets import process_tweet
+from processTweets import Newname2name, process_tweet
 from textblob import TextBlob
 from data import handle_Data
 
@@ -9,25 +9,25 @@ OFFICIAL_AWARDS_1819 = ['best motion picture - drama', 'best motion picture - mu
 exclude_words = ['best', 'supporting']
 
 def getSentiment(year):
-    awards2tweets, useless, name2Newname = process_tweet(year)
-
+    awards2tweets, useless, Newname2name = process_tweet(year)
     result = dict()
     if year == 2013 or year == 2015:
         awards_list = OFFICIAL_AWARDS_1315
     elif year == 2018 or year == 2019:
         awards_list = OFFICIAL_AWARDS_1819
-    
+    for award in awards_list:
+        result[award] = "neutral"
     #Sentiment analysis for each award
    
-    for award in awards_list:
+    for key in awards2tweets:
         #total polarity score for each award
         socre = 0
-        temp = name2Newname[award]
-        temp = "".join(temp)
-        if temp in awards2tweets:
-            tweets = awards2tweets["".join(temp)]
-        else:
-            continue
+        orname = Newname2name[key]
+        #temp = name2Newname[award]
+        temo = " "
+        # temp = "".join(temp)
+       
+        tweets = awards2tweets[key]
         for tweet in tweets:
             tplist = tweet.split()
             for word in exclude_words:
@@ -40,11 +40,12 @@ def getSentiment(year):
             if analysis.sentiment.polarity < 0:
                 socre -= 1
         if socre > 0:
-            result[award] = "positive"
+            result[orname] = "positive"
         elif socre < 0:
-            result[award] = "negative"
+            result[orname] = "negative"
         else:
-            result[award] = "neutral"
+            result[orname] = "neutral"
+   # print(result)
     return result
         
 
