@@ -10,7 +10,7 @@ import re
 #     if tok.label_ == 'PERSON':
 #         print(tok.text)
 
-def getNominees(year, winnerd, presenterd):
+def getNominees(year):
     name_pattern = re.compile(r'[A-Z]\w*\s[A-Z]\w*')
     year_pattern = re.compile(r'\d{4}')
     
@@ -21,7 +21,7 @@ def getNominees(year, winnerd, presenterd):
      nominees = {}
      a_real_name = Newname2name[tt]
      result = awards2tweets[tt]
-    #  winner_keyword = ['win', 'won', 'goes to', 'go to', 'congrates', 'congratulations', 'congratulate', '-', 'for']
+     nom_keyword = ['win', 'won', 'hope', 'wish', 'rob', 'robbed']
      tem = ['@', 'best', 'director', 'motion', 'picture', 'actor', 'actress', 'supporting', 'comedy', 'musical', 'mini-series', 'screenplay', 'performance', 'series', 'tv', 'mini', 'golden globe', 'song']
      tem1 = ['@', 'best', 'director', 'motion', 'picture', 'actor', 'actress', 'supporting', 'comedy', 'musical', 'mini-series', 'screenplay', 'performance', 'series', 'tv', 'mini', 'golden globe', 'song', 'and']
      nlp = spacy.load('en_core_web_sm')
@@ -30,7 +30,8 @@ def getNominees(year, winnerd, presenterd):
          for out in result:
    
              temp = out.lower()
-
+             if not any([kw in temp for kw in nom_keyword]):
+              continue
              o = nlp(out)
 
              foundWinner = False
@@ -41,8 +42,15 @@ def getNominees(year, winnerd, presenterd):
                 if tok.label_ == 'WORK_OF_ART':
                   work_name = re.sub(r'[^\w\s]', '', work_name)
                   foundWinner = True
-                  if (work_name in winnerd[a_real_name]) or (winnerd[a_real_name] in work_name):
-                      continue
+                #   if (work_name in winnerd[a_real_name]) or (winnerd[a_real_name] in work_name):
+                #       continue
+                #   signal = False
+                #   for i in presenterd[a_real_name]:
+                #     if (work_name in i) or (i in work_name):
+                #       signal = True
+                #       break
+                #   if signal:
+                #       continue
                   if work_name in nominees:
                       nominees[work_name] += 1
                   else:
@@ -58,8 +66,15 @@ def getNominees(year, winnerd, presenterd):
                                     break
                             if sig:
                                 continue
-                            if (chunk.text.lower() in winnerd[a_real_name]) or (winnerd[a_real_name] in chunk.text.lower()):
-                                continue
+                            # if (chunk.text.lower() in winnerd[a_real_name]) or (winnerd[a_real_name] in chunk.text.lower()):
+                            #     continue
+                            # signal = False
+                            # for i in presenterd[a_real_name]:
+                            #     if (chunk.text.lower() in i) or (i in chunk.text.lower()):
+                            #         signal = True
+                            #         break
+                            # if signal:
+                            #     continue
                             if any([t in chunk.text.lower() for t in tem]):
                                 continue
                             if str(possible_subject).lower() in chunk.text.lower():
@@ -77,8 +92,15 @@ def getNominees(year, winnerd, presenterd):
                                     break
                             if sig:
                                 continue
-                            if (chunk.text.lower() in winnerd[a_real_name]) or (winnerd[a_real_name] in chunk.text.lower()):
-                                continue
+                            # if (chunk.text.lower() in winnerd[a_real_name]) or (winnerd[a_real_name] in chunk.text.lower()):
+                            #     continue
+                            # signal = False
+                            # for i in presenterd[a_real_name]:
+                            #     if (chunk.text.lower() in i) or (i in chunk.text.lower()):
+                            #         signal = True
+                            #         break
+                            # if signal:
+                            #     continue
                             if any([t in chunk.text.lower() for t in tem]):
                                 continue
                             if str(possible_subject).lower() in chunk.text.lower():
@@ -101,7 +123,8 @@ def getNominees(year, winnerd, presenterd):
          
       for out in result:
           temp = out.lower()
-
+          if not any([kw in temp for kw in nom_keyword]):
+              continue
           numbers = year_pattern.findall(out)
           check = True
           for number in numbers:
@@ -128,8 +151,15 @@ def getNominees(year, winnerd, presenterd):
 
                   if any([t in na for t in tem1]):
                       continue
-                  if (na in winnerd[a_real_name]) or (winnerd[a_real_name] in na):
-                      continue
+                #   if (na in winnerd[a_real_name]) or (winnerd[a_real_name] in na):
+                #       continue
+                #   signal = False
+                #   for i in presenterd[a_real_name]:
+                #     if (na in i) or (i in na):
+                #             signal = True
+                #             break
+                #   if signal:
+                #             continue
                   if na in nominees:
                       nominees[na] += 1
                   else:
@@ -137,15 +167,21 @@ def getNominees(year, winnerd, presenterd):
      if len(nominees) == 0:
         # print(tt, '->', 'None')
         newAN = Newname2name[tt]
-        awards2nominee[newAN] = 'None'       
+        awards2nominee[newAN] = []       
         continue
      nominees = sorted(nominees.items(), key = lambda kv:kv[1], reverse= True)
      newAN = Newname2name[tt]
-     awards2nominee[newAN] = nominees[0][0]
+     num = 4
+     if len(nominees) < 4:
+         num = len(nominees)
+     tempor = []
+     
+     for i in range(num):
+            tempor.append(nominees[i][0])
+            print(nominees[i][0])
+     awards2nominee[newAN] = tempor
     # print(awards2winner)
     return awards2nominee 
     #  print(tt, '->',winners[0])
     #  if len(winners) >= 2:
     #     print(tt, '->',winners[1])
-
-getNominees(2013)
