@@ -51,6 +51,7 @@ def find_award_names(year):
         num = len(awards_dict)
     for i in range(num):
         a_list.append(awards_dict[i][0])
-        print(awards_dict[i])
+        #print(awards_dict[i])
     return a_list
+
 
