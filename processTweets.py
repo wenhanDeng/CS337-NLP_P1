@@ -11,13 +11,14 @@ awards2newAward = {}
 Newname2name = {}
 def process_tweet(years):
     nlp = spacy.load('en_core_web_sm')
+    cur_awards_list = []
     if years == 2013 or years == 2015:
-        awards_list = OFFICIAL_AWARDS_1315
+        cur_awards_list = OFFICIAL_AWARDS_1315
     elif years == 2018 or years == 2019:
-        awards_list = OFFICIAL_AWARDS_1819
+        cur_awards_list = OFFICIAL_AWARDS_1819
     # process the award name first
     new_awards_list = []
-    for a in awards_list:
+    for a in cur_awards_list:
         new_name = []
         for i in a.split():
             if i in words_exclusion:
@@ -116,5 +117,4 @@ def process_tweet(years):
 
     # print(new_awards_list)            
     return awards2tweets, new_awards_list, Newname2name
-
 
