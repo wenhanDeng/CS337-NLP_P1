@@ -1,10 +1,13 @@
 '''Version 0.35'''
+
 import json
+from Nominee import getNominees
 from winner import getWinners
 from hosts import findhosts
 from sentiment import getSentiment
 from bestdress import findbestandwrostdressed
 from award_names import find_award_names
+from presenter import find_presenter
 
 OFFICIAL_AWARDS_1315 = ['cecil b. demille award', 'best motion picture - drama', 'best performance by an actress in a motion picture - drama', 'best performance by an actor in a motion picture - drama', 'best motion picture - comedy or musical', 'best performance by an actress in a motion picture - comedy or musical', 'best performance by an actor in a motion picture - comedy or musical', 'best animated feature film', 'best foreign language film', 'best performance by an actress in a supporting role in a motion picture', 'best performance by an actor in a supporting role in a motion picture', 'best director - motion picture', 'best screenplay - motion picture', 'best original score - motion picture', 'best original song - motion picture', 'best television series - drama', 'best performance by an actress in a television series - drama', 'best performance by an actor in a television series - drama', 'best television series - comedy or musical', 'best performance by an actress in a television series - comedy or musical', 'best performance by an actor in a television series - comedy or musical', 'best mini-series or motion picture made for television', 'best performance by an actress in a mini-series or motion picture made for television', 'best performance by an actor in a mini-series or motion picture made for television', 'best performance by an actress in a supporting role in a series, mini-series or motion picture made for television', 'best performance by an actor in a supporting role in a series, mini-series or motion picture made for television']
 OFFICIAL_AWARDS_1819 = ['best motion picture - drama', 'best motion picture - musical or comedy', 'best performance by an actress in a motion picture - drama', 'best performance by an actor in a motion picture - drama', 'best performance by an actress in a motion picture - musical or comedy', 'best performance by an actor in a motion picture - musical or comedy', 'best performance by an actress in a supporting role in any motion picture', 'best performance by an actor in a supporting role in any motion picture', 'best director - motion picture', 'best screenplay - motion picture', 'best motion picture - animated', 'best motion picture - foreign language', 'best original score - motion picture', 'best original song - motion picture', 'best television series - drama', 'best television series - musical or comedy', 'best television limited series or motion picture made for television', 'best performance by an actress in a limited series or a motion picture made for television', 'best performance by an actor in a limited series or a motion picture made for television', 'best performance by an actress in a television series - drama', 'best performance by an actor in a television series - drama', 'best performance by an actress in a television series - musical or comedy', 'best performance by an actor in a television series - musical or comedy', 'best performance by an actress in a supporting role in a series, limited series or motion picture made for television', 'best performance by an actor in a supporting role in a series, limited series or motion picture made for television', 'cecil b. demille award']
@@ -28,6 +31,8 @@ def get_nominees(year):
     names as keys, and each entry a list of strings. Do NOT change
     the name of this function or what it returns.'''
     # Your code here
+
+    nominees = getNominees(year)
     return nominees
 
 def get_winner(year):
@@ -43,7 +48,7 @@ def get_presenters(year):
     names as keys, and each entry a list of strings. Do NOT change the
     name of this function or what it returns.'''
     # Your code here
-    return presenters
+    return find_presenter(year)
 
 def pre_ceremony():
     '''This function loads/fetches/processes any data your program
@@ -61,18 +66,26 @@ def main():
     run when grading. Do NOT change the name of this function or
     what it returns.'''
     # Your code here
-    years = [2013, 2015]
+    # years = [2013, 2015]
+    years = [2013]
     #Finalresult contain the final answer for 2013 and 2015
     Finalresult = dict()
 
     for year in years:
         hosts = get_hosts(year)
+        print("Finish Hosts")
         awards = get_awards(year)
-        nominees = get_nominees(year)
-        presenters = get_presenters(year)
+        print("Finish awards")
         winners = get_winner(year)
+        print("Finish winners")
+        nominees = get_nominees(year)
+        print("Finish nominees")
+        presenters = get_presenters(year)
+        print("Finish presenters")
         sentiments = getSentiment(year)
+        print("Finish sents")
         dreesed = findbestandwrostdressed(year)
+        print("Finish dresss")
 
         result = dict()
         result["hosts"] = hosts
@@ -91,6 +104,7 @@ def main():
             result["award_data"][award]["nominees"] = nominees[award]
             result["award_data"][award]["presenters"] = presenters[award]
             result["award_data"][award]["winner"] = winners[award]
+            
             print("nominees: ", end =" ")
             print(nominees[award])
             print("presenters: ", end =" ")
@@ -116,3 +130,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
