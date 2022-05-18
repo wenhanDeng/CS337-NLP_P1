@@ -6,6 +6,7 @@ def findhosts(year):
     # load english language model
     nlp = spacy.load('en_core_web_sm')
     pattern = re.compile(r'host', re.I)
+    #name_pattern = re.compile(r'[A-Z][a-z]* [A-Z][a-z]*-[A-Z][a-z]*')
     name_pattern = re.compile(r'[A-Z][a-z]* [A-Z][a-z]*')
     year_pattern = re.compile(r'\d{4}')
     result = handle_Data(year)
@@ -33,22 +34,21 @@ def findhosts(year):
                     else:
                         hosts[na] = 1
     hosts = sorted(hosts.items(), key = lambda kv:kv[1], reverse= True)
-    print(hosts)
     hosts = hosts[:5]
     hosts = list(map(list, hosts))
-    """
-    for x in range(5):
-        if ' ' not in hosts[x][0]:
-            for y in range(5):
-                if x != y and hosts[x][0] in hosts[y][0]:
-                    hosts[y][1] += hosts[x][1]
-                    hosts[x][1] = 0
-    hosts = sorted(hosts, key = lambda kv:kv[1], reverse= True)
-    hosts = hosts[:2]
-    print(hosts)
-    """
+    for key,value in hosts:
+        total += value
+    finalanswer = []
+    for key,value in hosts:
+        if value > total * 0.3:
+            finalanswer.append(key)
+    #print("Host: ", end =" ")
+    #print(finalanswer)
+
+    return finalanswer
 
 
-findhosts(2015)
+#findhosts(2015)
+
 
 
