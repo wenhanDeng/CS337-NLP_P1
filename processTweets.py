@@ -118,4 +118,3 @@ def process_tweet(years):
     return awards2tweets, new_awards_list, Newname2name
 
 
-process_tweet(2013)
