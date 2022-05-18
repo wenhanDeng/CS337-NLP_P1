@@ -1,7 +1,6 @@
 
 
-from doctest import FAIL_FAST
-from pickle import TRUE
+
 from processTweets import process_tweet
 from data import handle_Data
 import spacy
@@ -19,14 +18,14 @@ def getWinners(year):
     year_pattern = re.compile(r'\d{4}')
     
     awards2winner = {}
-    awards2tweets, awards_list, name2Newname = process_tweet(year)
-    
+    awards2tweets, awards_list, Newname2name = process_tweet(year)
+
     for tt in awards2tweets:
-     tt = 'mini-seriesormotionpicturetelevisiontv'
      winners = {}
      result = awards2tweets[tt]
      winner_keyword = ['win', 'won', 'goes to', 'go to', 'congrates', 'congratulations', 'congratulate', '-', 'for']
-     tem = ['best', 'director', 'motion', 'picture', 'actor', 'actress', 'supporting', 'comedy', 'musical', 'mini-series', 'screenplay', 'performance', 'series', 'tv', 'mini', 'and', 'golden globe', 'song']
+     tem = ['@', 'best', 'director', 'motion', 'picture', 'actor', 'actress', 'supporting', 'comedy', 'musical', 'mini-series', 'screenplay', 'performance', 'series', 'tv', 'mini', 'golden globe', 'song']
+     tem1 = ['@', 'best', 'director', 'motion', 'picture', 'actor', 'actress', 'supporting', 'comedy', 'musical', 'mini-series', 'screenplay', 'performance', 'series', 'tv', 'mini', 'golden globe', 'song', 'and']
      nlp = spacy.load('en_core_web_sm')
      
      if ('actor' not in tt) and ('actress' not in tt) and ('cecil' not in tt) and ('director' not in tt):
@@ -63,8 +62,10 @@ def getWinners(year):
                                     break
                             if sig:
                                 continue
+                            if any([t in chunk.text.lower() for t in tem]):
+                                continue
                             if str(possible_subject).lower() in chunk.text.lower():
-                                foundWinner = TRUE
+                                foundWinner = True
                                 if chunk.text.lower() in winners:
                                     winners[chunk.text.lower()] += 1
                                 else:
@@ -78,8 +79,10 @@ def getWinners(year):
                                     break
                             if sig:
                                 continue
+                            if any([t in chunk.text.lower() for t in tem]):
+                                continue
                             if str(possible_subject).lower() in chunk.text.lower():
-                                foundWinner = TRUE
+                                foundWinner = True
                                 if chunk.text.lower() in winners:
                                     winners[chunk.text.lower()] += 1
                                 else:
@@ -126,19 +129,23 @@ def getWinners(year):
                   
                   na = names.lower()
 
-                  if any([t in na for t in tem]):
+                  if any([t in na for t in tem1]):
                       continue
                   if na in winners:
                       winners[na] += 1
                   else:
                       winners[na] = 1
      if len(winners) == 0:
-        print(tt, '->', 'None')
+        # print(tt, '->', 'None')
+        newAN = Newname2name[tt]
+        awards2winner[newAN] = 'None'       
         continue
      winners = sorted(winners.items(), key = lambda kv:kv[1], reverse= True)
-     awards2winner[tt] = winners[0]
-     print(tt, '->',winners[0])
+     newAN = Newname2name[tt]
+     awards2winner[newAN] = winners[0][0]
+    print(awards2winner)
+    return awards2winner
+    #  print(tt, '->',winners[0])
     #  if len(winners) >= 2:
     #     print(tt, '->',winners[1])
 getWinners(2013)
-    
