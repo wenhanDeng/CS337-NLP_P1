@@ -19,6 +19,7 @@ def getNominees(year, winnerd, presenterd):
 
     for tt in awards2tweets:
      nominees = {}
+     a_real_name = Newname2name[tt]
      result = awards2tweets[tt]
     #  winner_keyword = ['win', 'won', 'goes to', 'go to', 'congrates', 'congratulations', 'congratulate', '-', 'for']
      tem = ['@', 'best', 'director', 'motion', 'picture', 'actor', 'actress', 'supporting', 'comedy', 'musical', 'mini-series', 'screenplay', 'performance', 'series', 'tv', 'mini', 'golden globe', 'song']
@@ -40,6 +41,8 @@ def getNominees(year, winnerd, presenterd):
                 if tok.label_ == 'WORK_OF_ART':
                   work_name = re.sub(r'[^\w\s]', '', work_name)
                   foundWinner = True
+                  if (work_name in winnerd[a_real_name]) or (winnerd[a_real_name] in work_name):
+                      continue
                   if work_name in nominees:
                       nominees[work_name] += 1
                   else:
@@ -54,6 +57,8 @@ def getNominees(year, winnerd, presenterd):
                                     sig = True
                                     break
                             if sig:
+                                continue
+                            if (chunk.text.lower() in winnerd[a_real_name]) or (winnerd[a_real_name] in chunk.text.lower()):
                                 continue
                             if any([t in chunk.text.lower() for t in tem]):
                                 continue
@@ -71,6 +76,8 @@ def getNominees(year, winnerd, presenterd):
                                     sig = True
                                     break
                             if sig:
+                                continue
+                            if (chunk.text.lower() in winnerd[a_real_name]) or (winnerd[a_real_name] in chunk.text.lower()):
                                 continue
                             if any([t in chunk.text.lower() for t in tem]):
                                 continue
@@ -120,6 +127,8 @@ def getNominees(year, winnerd, presenterd):
                   na = names.lower()
 
                   if any([t in na for t in tem1]):
+                      continue
+                  if (na in winnerd[a_real_name]) or (winnerd[a_real_name] in na):
                       continue
                   if na in nominees:
                       nominees[na] += 1
