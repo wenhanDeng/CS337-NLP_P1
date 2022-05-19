@@ -8,6 +8,7 @@ from data import handle_Data
 
 
 def find_presenter(year):
+    year = int(year)
     # load english language model
     awards2tweets, awards_list, Newname2name = process_tweet(year)
     PRESENT_WORDS = ['present', 'presents', 'presenters', 'presenting', 'introduces', 'intros', 'introducing', 'announce', 'announcing', 'announcers','mentions', 'mentioned', 'mention', 'award', 'awarded', 'awarding']
