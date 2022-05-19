@@ -9,6 +9,7 @@ OFFICIAL_AWARDS_1819 = ['best motion picture - drama', 'best motion picture - mu
 exclude_words = ['best', 'supporting']
 
 def getSentiment(year):
+    year = int(year)
     awards2tweets, useless, Newname2name = process_tweet(year)
     result = dict()
     if year == 2013 or year == 2015:
