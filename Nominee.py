@@ -11,6 +11,7 @@ import re
 #         print(tok.text)
 
 def getNominees(year):
+    year = int(year)
     name_pattern = re.compile(r'[A-Z]\w*\s[A-Z]\w*')
     year_pattern = re.compile(r'\d{4}')
     
