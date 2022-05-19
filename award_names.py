@@ -14,6 +14,7 @@ a_list = []
 #     print(tok.text, '->', tok.is_stop)
 
 def find_award_names(year):
+    year = int(year)
     # load english language model
     if year == 2013 or year == 2015:
         num = 28
