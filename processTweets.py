@@ -10,6 +10,7 @@ awards2tweets = {}
 awards2newAward = {}
 Newname2name = {}
 def process_tweet(years):
+    years = int(years)
     nlp = spacy.load('en_core_web_sm')
     cur_awards_list = []
     if years == 2013 or years == 2015:
